@@ -1,0 +1,99 @@
+// Types A4: Denizen
+
+import java.util.Scanner;
+
+/** 
+  This program operates like a car
+  @author Kenneth Tan
+*/   
+
+/**
+   There are two cars with different car types and drive types with mileage, fuel, and gears.
+   The mileage will be changed by driving more, the fuel increased by refueling and
+   decreased by driving more, and literally changing the gears.
+*/
+public class DenizenTester_2TanK
+{  
+   public static void main ( String [] args)
+   {
+      Denizen bob = new Denizen();
+      System.out.println(bob.greet());
+      int counter = 1;
+      while (counter < 21)
+      {
+         System.out.println(bob.attaccOrHeal());
+         counter++;
+      }
+   }
+}
+
+/**
+      Creates methods that give more information about the car
+*/
+class Denizen
+{
+   private String denizenName;
+   private String denizenType;
+   private int healthPoints;
+   private int strength;
+   private int knowledgeLevel;
+   private String denizenHometown;
+   private int damageDealt;
+   private int healingGiven;
+   private double probabilityHold;
+   private int numMoves;
+   
+   /**
+      Constructs a car starting with 0 gallons of fuel, 0 mileage
+      The car type and drive type are passed in as parameters 
+      The default gear is set here as D
+   */
+   public Denizen()
+   {   
+      healthPoints = 100;
+      strength = 80;
+      knowledgeLevel = 1;
+      damageDealt = 0;
+      healingGiven = 0;
+      probabilityHold = 0.0;
+      numMoves = 0;
+      denizenInfo();
+      
+   }
+   
+   public void denizenInfo()
+   {
+      Scanner myScanner = new Scanner (System.in);
+      System.out.print("What is the character's name? \t ");
+      denizenName = myScanner.nextLine();
+      System.out.print( "What kind of character is he/she? \t ");
+      String denizenType = myScanner.nextLine();
+      System.out.print("What place of origin? \t");
+      String denizenHometown = myScanner.nextLine();
+   }
+
+   /**
+      Increments mileage by 50. Lose 5 gallons of fuel for each 50 miles driven
+   */
+   public String greet( )
+   {  
+      return "Hello! I am a " + denizenType + " named " + denizenName + 
+      " and I am from " + denizenHometown + ".";
+   }
+
+   public String attaccOrHeal()
+   {
+      damageDealt = (int) (Math.random()  * 2 * knowledgeLevel + 10);
+      healingGiven = (int) (Math.random() * 2 * knowledgeLevel + 10);
+      probabilityHold = Math.random();
+      numMoves++;
+      if ((numMoves % 10) == 0)
+         knowledgeLevel++;
+      if (probabilityHold <= 0.5)
+         return denizenName + " heals " + healingGiven;
+      else
+         return denizenName + " deals " + damageDealt + " damage.";
+
+   }
+
+}
