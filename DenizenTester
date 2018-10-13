@@ -67,9 +67,9 @@ class Denizen
       System.out.print("What is the character's name? \t ");
       denizenName = myScanner.nextLine();
       System.out.print( "What kind of character is he/she? \t ");
-      String denizenType = myScanner.nextLine();
+      denizenType = myScanner.nextLine();
       System.out.print("What place of origin? \t");
-      String denizenHometown = myScanner.nextLine();
+      denizenHometown = myScanner.nextLine();
    }
 
    /**
