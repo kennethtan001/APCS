@@ -12,18 +12,12 @@ import java.util.Scanner;
    The mileage will be changed by driving more, the fuel increased by refueling and
    decreased by driving more, and literally changing the gears.
 */
-public class DenizenTester_2TanK
+public class DenizenGame
 {  
    public static void main ( String [] args)
    {
       Denizen bob = new Denizen();
-      System.out.println(bob.greet());
-      int counter = 1;
-      while (counter < 21)
-      {
-         System.out.println(bob.attaccOrHeal());
-         counter++;
-      }
+      
    }
 }
 
@@ -42,6 +36,8 @@ class Denizen
    private int healingGiven;
    private double probabilityHold;
    private int numMoves;
+   private boolean continueGame;
+   private String move;
    
    /**
       Constructs a car starting with 0 gallons of fuel, 0 mileage
@@ -57,8 +53,15 @@ class Denizen
       healingGiven = 0;
       probabilityHold = 0.0;
       numMoves = 0;
+      continueGame = true;
+      move = "";
       denizenInfo();
-      
+      while (continueGame == true)
+      {
+         runGame();
+      }
+      if (continueGame == false)
+         System.out.println("GAME OVER");
    }
    
    public void denizenInfo()
@@ -93,7 +96,53 @@ class Denizen
          return denizenName + " heals " + healingGiven;
       else
          return denizenName + " deals " + damageDealt + " damage.";
-
+   }
+   
+   public int attacc()
+   {
+      damageDealt = (int) (Math.random()  * 2 * knowledgeLevel + 10);
+      numMoves++;
+      if ((numMoves % 10) == 0)
+         knowledgeLevel++;
+      return damageDealt;
+   }
+   
+   public int healing()
+   {
+      healingGiven = (int) (Math.random() * 2 * knowledgeLevel + 10);
+      numMoves++;
+      if ((numMoves % 10) == 0)
+         knowledgeLevel++;
+      return healingGiven;
+   }
+   
+   public void runGame()
+   {
+      Scanner makeMove = new Scanner(System.in);
+      while ((!move.equals("attack")) && (!move.equals("heal"))  && (!move.equals("quit")) && (!move.equals("greet")))
+      {
+         System.out.println("What will your move be: greet, attack, heal, or quit?");
+         move = makeMove.nextLine();
+      }
+      if (move.equals("greet")) 
+      {
+         System.out.println(greet());
+         move = "";
+      }
+      if (move.equals("attack"))
+      {
+         System.out.println(denizenName + " does " + attacc() + " damage to enemy.");
+         move = "";
+      }
+      if (move.equals("heal")) 
+      {
+         System.out.println(denizenName + " heals by " + healing() + "HP");
+         move = "";
+      }
+      if (move.equals("quit")) 
+      {
+         continueGame = false;
+      }
    }
 
 }
