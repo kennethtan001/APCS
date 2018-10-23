@@ -3,26 +3,27 @@
 import java.util.Scanner;
 
 /** 
-  This program operates like a car
+  This program operates like a denizen in a game
   @author Kenneth Tan
 */   
 
 /**
-   There are two cars with different car types and drive types with mileage, fuel, and gears.
-   The mileage will be changed by driving more, the fuel increased by refueling and
-   decreased by driving more, and literally changing the gears.
+   There is 1 denizen with a name, type, and hometown. He will introduce himself
+   and then attack or heal other players several times. His stats are also output 
+   at the end.
 */
-public class DenizenGame
+public class DenizenTester_2TanK
 {  
    public static void main ( String [] args)
    {
       Denizen bob = new Denizen();
-      
+      Enemy chicken = new Enemy();
+      Battle b1 = new Battle(bob,chicken);
    }
 }
 
 /**
-      Creates methods that give more information about the car
+      Creates methods that give more information about the denizen
 */
 class Denizen
 {
@@ -36,16 +37,13 @@ class Denizen
    private int healingGiven;
    private double probabilityHold;
    private int numMoves;
-   private boolean continueGame;
-   private String move;
-   private boolean currentlyFighting;
-   private int damageTaken;
-   private String combatMove;
    
    /**
-      Constructs a car starting with 0 gallons of fuel, 0 mileage
-      The car type and drive type are passed in as parameters 
-      The default gear is set here as D
+      Constructs a level 1 denizen starting with 100HP, 80 strength, and 
+      initializes the other instance variables. These other instance variables
+      are all set to 0 by default. The denizen's name, type, and hometown
+      are not initialized here and will be initialized in the next method
+      designed to do this.
    */
    public Denizen()
    {   
@@ -56,20 +54,12 @@ class Denizen
       healingGiven = 0;
       probabilityHold = 0.0;
       numMoves = 0;
-      continueGame = true;
-      move = "";
-      damageTaken = 0;
       denizenInfo();
-      currentlyFighting = false;
-      combatMove = "";
-      while (continueGame == true)
-      {
-         runGame();
-      }
-      if (continueGame == false)
-         System.out.println("GAME OVER");
    }
    
+   /**
+      Gets the user input for the character's name, type, and hometown
+   */
    public void denizenInfo()
    {
       Scanner myScanner = new Scanner (System.in);
@@ -82,7 +72,7 @@ class Denizen
    }
 
    /**
-      Increments mileage by 50. Lose 5 gallons of fuel for each 50 miles driven
+      Prints out a greeting with the character's name, type and hometown
    */
    public String greet( )
    {  
@@ -90,6 +80,12 @@ class Denizen
       " and I am from " + denizenHometown + ".";
    }
 
+   /** 
+      Uses Math.random() to randomly determine if the character will attack or
+      heal, and then determines how much the character attacks/heals based
+      on knowledge level. This method then returns the damage done or 
+      healing given.
+   */
    public String attaccOrHeal()
    {
       damageDealt = (int) (Math.random()  * 2 * knowledgeLevel + 10);
@@ -140,7 +136,7 @@ class Denizen
    {
       return healthPoints;
    }
-   
+      
    public boolean isAlive()
    {
       if (healthPoints > 0)
@@ -149,117 +145,15 @@ class Denizen
          return false;
    }
    
-   public void runGame()
+   /**
+      Returns the character's stats
+   */
+   public String toString()
    {
-      Scanner makeMove = new Scanner(System.in);
-      System.out.println("What will your move be: greet, attack, heal, or quit?");
-      move = makeMove.nextLine();
-      move = move.toLowerCase();
-      while ((!move.equals("attack")) && (!move.equals("heal"))  && (!move.equals("quit")) && (!move.equals("greet")))
-      {
-         System.out.println("Invalid choice. Please select again.");
-         System.out.println("What will your move be: greet, attack, heal, or quit?");
-         move = makeMove.nextLine();
-         move = move.toLowerCase();
-      }
-      if (move.equals("greet")) 
-      {
-         System.out.println(greet());
-         move = "";
-      }
-      if (move.equals("attack"))
-      {
-         fight();
-         move = "";
-      }
-      if (move.equals("heal")) 
-      {
-         System.out.println(denizenName + " heals by " + getHealing() + "HP");
-         move = "";
-      }
-      if (move.equals("quit")) 
-      {
-         continueGame = false;
-      }
+      return "Your Level " + knowledgeLevel + " denizen is at " + healthPoints + 
+      " health and " + strength + " strength.";
    }
-   
-   public void fight()
-   {
-      currentlyFighting = true;
-      Enemy creature1 = new Enemy();
-      Scanner fightMove = new Scanner(System.in);
-      System.out.println("Here is enemy. HP: " + creature1.getEnemyHealth() + ", Attack pwr: " + creature1.getDamageDealt());
-      while ((isAlive() == true) && (currentlyFighting == true))
-      {
-         System.out.println("What is your move: attack or heal?");
-         combatMove = fightMove.nextLine();
-         combatMove = combatMove.toLowerCase();
-         while ((!move.equals("attack")) && (!move.equals("heal")))
-         {
-            System.out.println("Invalid choice. Please select again.");
-            System.out.println("What will your move be: attack or heal?");
-            combatMove = fightMove.nextLine();
-            combatMove = combatMove.toLowerCase();
-         }
-         if (combatMove.equals("attack"))
-         {
-            attacc();
-            creature1.enemyTakeDamage(damageDealt);
-            System.out.println("You dealt " + damageDealt + " damage.");
-            if (creature1.getEnemyHealth() > 0)
-            {
-               damageTaken = creature1.getDamageDealt();
-               takeDamage(damageTaken);
-               System.out.println("You took " + damageTaken + " damage. ");
-               if (isAlive() == true)
-               {
-                  System.out.println("Your HP:" + healthPoints);
-               }
-               if (isAlive() == false)
-               {
-                  System.out.println("Your || HP: 0 || ");
-                  currentlyFighting = false;
-                  continueGame = false;
-               }
-               System.out.println("Here is enemy. HP: " + creature1.getEnemyHealth() + ", Attack pwr: " + creature1.getDamageDealt());
-               currentlyFighting = true;
-            }
-            if (creature1.getEnemyHealth() <= 0)
-            {
-               System.out.println("You defeated the enemy!");
-               currentlyFighting = false;
-            }
-         }
-         if (combatMove.equals("heal"))
-         {
-            healing();
-            System.out.println("You healed yourself by " + healingGiven + "HP.");
-            if (creature1.getEnemyHealth() > 0)
-            {
-               damageTaken = creature1.getDamageDealt();
-               takeDamage(damageTaken);
-               System.out.println("You took " + damageTaken + " damage. ");
-               if (isAlive() == true)
-               {
-                  System.out.println("Your HP:" + healthPoints);
-               }
-               if (isAlive() == false)
-               {
-                  System.out.println("Your HP: 0 ");
-                  currentlyFighting = false;
-                  continueGame = false;
-               }
-               System.out.println("Here is enemy. HP: " + creature1.getEnemyHealth() + ", Attack pwr: " + creature1.getDamageDealt());
-               currentlyFighting = true;
-            }
-            if (creature1.getEnemyHealth() <= 0)
-            {
-               System.out.println("You defeated the enemy!");
-               currentlyFighting = false;
-            }
-         }
-      }
-   }
+
 }
 
 
@@ -291,6 +185,102 @@ class Enemy
    public void enemyTakeDamage(int damageReceived)
    {
       enemyHealth = enemyHealth - damageReceived;
+   }
+}
+
+
+class Battle
+{
+   private Denizen d1;
+   private Enemy e1;
+   private boolean currentlyFighting;
+   private String combatMove;
+   private int damageTaken;
+   
+   public Battle(Denizen denizen1, Enemy enemy1)
+   {
+      d1 = denizen1;
+      e1 = enemy1;
+      currentlyFighting = false;
+      damageTaken = 0;
+      fight();
+   }
+   
+   public void fight()
+   {
+      currentlyFighting = true;
+      //Enemy enemy1 = new Enemy();
+      Scanner fightMove = new Scanner(System.in);
+      e1.damageDealt();
+      System.out.println("Here is enemy. HP: " + e1.getEnemyHealth() + ", Attack pwr: " + e1.getDamageDealt());
+      while ((d1.isAlive() == true) && (currentlyFighting == true))
+      {
+         System.out.println("What is your move: attack or heal?");
+         combatMove = fightMove.nextLine();
+         combatMove = combatMove.toLowerCase();
+         while ((!combatMove.equals("attack")) && (!combatMove.equals("heal")))
+         {
+            System.out.println("Invalid choice. Please select again.");
+            System.out.println("What will your move be: attack or heal?");
+            combatMove = fightMove.nextLine();
+            combatMove = combatMove.toLowerCase();
+         }
+         if (combatMove.equals("attack"))
+         {
+            d1.attacc();
+            e1.enemyTakeDamage(d1.getAttacc());
+            System.out.println("You dealt " + d1.getAttacc() + " damage.");
+            if (e1.getEnemyHealth() > 0)
+            {
+               damageTaken = e1.getDamageDealt();
+               d1.takeDamage(damageTaken);
+               System.out.println("You took " + damageTaken + " damage. ");
+               if (d1.isAlive() == true)
+               {
+                  System.out.println("Your HP:" + d1.getHealthPoints());
+               }
+               if (d1.isAlive() == false)
+               {
+                  System.out.println("Your HP: 0");
+                  currentlyFighting = false;
+               }
+               System.out.println("Here is enemy. HP: " + e1.getEnemyHealth() + ", Attack pwr: " + e1.getDamageDealt());
+               currentlyFighting = true;
+            }
+            if (e1.getEnemyHealth() <= 0)
+            {
+               System.out.println("You defeated the enemy!");
+               currentlyFighting = false;
+            }
+         }
+         if (combatMove.equals("heal"))
+         {
+            d1.healing();
+            System.out.println("You healed yourself by " + d1.getHealing() + "HP.");
+            if (e1.getEnemyHealth() > 0)
+            {
+               damageTaken = e1.getDamageDealt();
+               d1.takeDamage(damageTaken);
+               System.out.println("You took " + damageTaken + " damage. ");
+               if (d1.isAlive() == true)
+               {
+                  System.out.println("Your HP:" + d1.getHealthPoints());
+               }
+               if (d1.isAlive() == false)
+               {
+                  System.out.println("Your HP: 0 ");
+                  currentlyFighting = false;
+               }
+               System.out.println("Here is enemy. HP: " + e1.getEnemyHealth() + ", Attack pwr: " + e1.getDamageDealt());
+               currentlyFighting = true;
+            }
+            if (e1.getEnemyHealth() <= 0)
+            {
+               System.out.println("You defeated the enemy!");
+               currentlyFighting = false;
+            }
+         }
+      }
    }
    
 }
